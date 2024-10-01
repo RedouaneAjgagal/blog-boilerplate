@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
-import { randomBytes } from "crypto"
+import { randomBytes } from "crypto";
+import axios from "axios";
 
 const app = express();
 
@@ -17,13 +18,34 @@ app.post("/posts", (req, res) => {
     const { title } = req.body;
     const postId = randomBytes(4).toString("hex");
 
-    posts[postId] = {
+    const newPost = {
         id: postId,
         title
     };
 
+    posts[postId] = newPost;
+
+
+    const event = {
+        type: "CREATE_POST",
+        data: posts[postId]
+    };
+    axios.post("http://localhost:4005/events", {
+        event
+    });
+
     res.status(201).send(posts[postId]);
-})
+});
+
+// event listner
+app.post("/events", (req, res) => {
+    const event = req.body;
+
+    console.log("Event received:", event.type);
+    console.log("Event data:", event.data);
+
+    return res.status(200).send({ status: "received" });
+});
 
 app.listen(4000, () => {
     console.log("Server is running on port 4000");
