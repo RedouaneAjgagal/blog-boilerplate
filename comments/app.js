@@ -28,6 +28,7 @@ app.post("/posts/:postId/comments", async (req, res) => {
 
     const comment = {
         id: commentId,
+        status: "pending",
         postId,
         content
     };
@@ -39,20 +40,43 @@ app.post("/posts/:postId/comments", async (req, res) => {
         data: comment
     }
 
-    await axios.post("http://localhost:4005/events", {
-        event
-    });
+    try {
+        await axios.post("http://localhost:4005/events", {
+            event
+        });
+    } catch (error) {
+        console.error(error);
+    }
 
     res.status(201).send(comment)
 
 });
 
 // event listner
-app.post("/events", (req, res) => {
+app.post("/events", async (req, res) => {
     const event = req.body;
 
     console.log("Event received:", event.type);
     console.log("Event data:", event.data);
+
+    switch (event.type) {
+        case "MODERATION_COMMENT":
+            const commentIndex = commentsByPosts[event.data.postId].findIndex(comment => comment.id === event.data.id);
+
+            commentsByPosts[event.data.postId][commentIndex] = event.data;
+            try {
+                await axios.post("http://localhost:4002/events", {
+                    type: "UPDATE_COMMENT",
+                    data: commentsByPosts[event.data.postId][commentIndex]
+                });
+            } catch (error) {
+                console.error(error);
+            }
+
+            break;
+        default:
+            break;
+    }
 
     return res.status(200).send({ status: "received" });
 });

@@ -14,7 +14,7 @@ app.get("/posts", (req, res) => {
     return res.status(200).send(posts);
 });
 
-app.post("/posts", (req, res) => {
+app.post("/posts", async (req, res) => {
     const { title } = req.body;
     const postId = randomBytes(4).toString("hex");
 
@@ -30,9 +30,13 @@ app.post("/posts", (req, res) => {
         type: "CREATE_POST",
         data: posts[postId]
     };
-    axios.post("http://localhost:4005/events", {
-        event
-    });
+    try {
+        await axios.post("http://localhost:4005/events", {
+            event
+        });
+    } catch (error) {
+        console.error(error);
+    }
 
     res.status(201).send(posts[postId]);
 });
