@@ -65,9 +65,11 @@ app.post("/events", async (req, res) => {
 
             commentsByPosts[event.data.postId][commentIndex] = event.data;
             try {
-                await axios.post("http://localhost:4002/events", {
-                    type: "UPDATE_COMMENT",
-                    data: commentsByPosts[event.data.postId][commentIndex]
+                await axios.post("http://localhost:4005/events", {
+                    event: {
+                        type: "UPDATE_COMMENT",
+                        data: commentsByPosts[event.data.postId][commentIndex]
+                    }
                 });
             } catch (error) {
                 console.error(error);

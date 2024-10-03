@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import axios from "axios";
 
 const app = express();
 
@@ -29,17 +30,11 @@ app.get("/query-posts", (req, res) => {
             }
         });
     }
-    
-    console.log(posts);
-    
+
     res.status(200).send(postsWithUnstrictedComments);
 });
 
-// event listner
-app.post("/events", (req, res) => {
-    const event = req.body;
-    // console.log(event);
-
+const queryEventsHandler = (event) => {
     switch (event.type) {
         case "UPDATE_COMMENT":
             if (!posts[event.data.postId]) return res.status(400).send({ status: "faild" });
@@ -72,11 +67,29 @@ app.post("/events", (req, res) => {
         default:
             break;
     }
+}
 
+// event listner
+app.post("/events", (req, res) => {
+    const event = req.body;
+
+    queryEventsHandler(event);
 
     res.status(200).send({ status: "received" });
 });
 
-app.listen(4002, () => {
+app.listen(4002, async () => {
     console.log("Server is running on port 4002");
+
+    try {
+        const res = await axios.get("http://localhost:4005/events");
+        const events = res.data;
+        console.log(events);
+        
+        for (const event of events) {
+            queryEventsHandler(event);
+        }
+    } catch (error) {
+        console.error(error);
+    }
 });

@@ -25,15 +25,21 @@ app.post("/events", async (req, res) => {
                 : "approved";
 
             console.log("---------------");
-            console.log(event);
+
+            const data = {
+                ...event.data,
+                status
+            };
+
+            console.log(data);
+
 
 
             try {
-                await axios.post("http://localhost:4001/events", {
-                    type: "MODERATION_COMMENT",
-                    data: {
-                        ...event.data,
-                        status
+                await axios.post("http://localhost:4005/events", {
+                    event: {
+                        type: "MODERATION_COMMENT",
+                        data
                     }
                 });
             } catch (error) {
