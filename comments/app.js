@@ -41,12 +41,14 @@ app.post("/posts/:postId/comments", async (req, res) => {
     }
 
     try {
-        await axios.post("http://localhost:4005/events", {
+        await axios.post("http://event-bus-serv:4005/events", {
             event
         });
     } catch (error) {
         console.error(error);
     }
+
+    console.log("Create a comment");
 
     res.status(201).send(comment)
 
@@ -65,7 +67,7 @@ app.post("/events", async (req, res) => {
 
             commentsByPosts[event.data.postId][commentIndex] = event.data;
             try {
-                await axios.post("http://localhost:4005/events", {
+                await axios.post("http://event-bus-serv:4005/events", {
                     event: {
                         type: "UPDATE_COMMENT",
                         data: commentsByPosts[event.data.postId][commentIndex]

@@ -13,10 +13,12 @@ app.post("/events", async (req, res) => {
 
     events.push(event);
 
-    axios.post("http://localhost:4000/events", event).catch(err => console.error(err));
-    axios.post("http://localhost:4001/events", event).catch(err => console.error(err));
-    axios.post("http://localhost:4002/events", event).catch(err => console.error(err));
-    axios.post("http://localhost:4003/events", event).catch(err => console.error(err));
+    console.log(`Received an event: ${event.type}`);
+
+    axios.post("http://posts-serv:4000/events", event).catch(err => console.error(err));
+    axios.post("http://comments-serv:4001/events", event).catch(err => console.error(err));
+    axios.post("http://query-serv:4002/events", event).catch(err => console.error(err));
+    axios.post("http://moderation-serv:4003/events", event).catch(err => console.error(err));
 
     res.status(200).send({ status: "OK" });
 });

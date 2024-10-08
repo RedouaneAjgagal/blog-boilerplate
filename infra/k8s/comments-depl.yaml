@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comments-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: comments
+  template:
+    metadata:
+      labels:
+        app: comments
+    spec:
+      containers:
+        - name: comments
+          image: ajgagal/blog-comments:latest
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comments-serv
+spec:
+  type: ClusterIP
+  selector:
+    app: comments
+  ports:
+    - port: 4001
+      targetPort: 4001
+      name: comments
+      protocol: TCP

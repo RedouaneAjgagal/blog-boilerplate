@@ -31,12 +31,14 @@ app.post("/posts", async (req, res) => {
         data: posts[postId]
     };
     try {
-        await axios.post("http://localhost:4005/events", {
+        await axios.post("http://event-bus-serv:4005/events", {
             event
         });
     } catch (error) {
         console.error(error);
     }
+
+    console.log("Create a blog post");
 
     res.status(201).send(posts[postId]);
 });

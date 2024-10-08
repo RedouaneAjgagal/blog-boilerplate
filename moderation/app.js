@@ -9,8 +9,6 @@ app.use(express.json());
 app.post("/events", async (req, res) => {
     const event = req.body;
 
-    // console.log(event);
-
     switch (event.type) {
         case "CREATE_COMMENT":
             await sleep();
@@ -33,10 +31,8 @@ app.post("/events", async (req, res) => {
 
             console.log(data);
 
-
-
             try {
-                await axios.post("http://localhost:4005/events", {
+                await axios.post("http://event-bus-serv:4005/events", {
                     event: {
                         type: "MODERATION_COMMENT",
                         data
