@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-serv
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: blog.com
+      http:
+        paths:
+          - pathType: Prefix
+            path: /posts
+            backend:
+              service:
+                name: posts-serv
+                port:
+                  number: 4000
