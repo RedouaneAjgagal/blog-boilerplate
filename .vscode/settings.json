@@ -1,5 +1,0 @@
-{
-    "yaml.schemas": {
-        "https://raw.githubusercontent.com/derailed/k9s/master/internal/config/json/schemas/k9s.json": "file:///c%3A/Users/Vinnex_OC/Desktop/blog-boilerplate/infra/k8s/client.depl.yaml"
-    }
-}
