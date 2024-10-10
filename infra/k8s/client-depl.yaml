@@ -17,8 +17,8 @@ spec:
           image: ajgagal/blog-client
           resources:
             limits:
-              memory: "128Mi"
-              cpu: "500m"
+              memory: "512Mi"
+              cpu: "1000m"
 ---
 apiVersion: v1
 kind: Service
